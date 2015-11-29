@@ -44,7 +44,7 @@ export default class AddFriendInput extends Component {
 
     handleSubmit (e) {
         const name = e.target.value.trim();
-        if (e.which === 13) {
+        if (e.which === 13 && name) {
             // Carriage return
             this.props.addFriend(name);
             this.setState({ name: '' });
