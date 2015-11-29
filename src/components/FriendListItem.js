@@ -1,6 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import classnames from 'classnames';
 import styles from './FriendListItem.css';
+import Avatar from 'material-ui/lib/avatar';
 
 export default class FriendListItem extends Component {
   static propTypes = {
@@ -15,8 +16,10 @@ export default class FriendListItem extends Component {
     return (
       <li className={styles.friendListItem}>
         <div className={styles.friendInfos}>
-          <div><span>{this.props.name}</span></div>
-          <div><small>xx friends in common</small></div>
+            <div>
+            <Avatar>{this.props.name[0]}</Avatar>
+            <span>{this.props.name}</span>
+            </div>
         </div>
         <div className={styles.friendActions}>
           <button className={`btn btn-default ${styles.btnAction}`} onClick={() => this.props.starFriend(this.props.id)}>

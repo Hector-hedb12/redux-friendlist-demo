@@ -12,6 +12,7 @@
 
 :local(.friendInfos span) {
   font-weight: bold;
+  margin: 10px;
 }
 
 :local(.friendActions) {
