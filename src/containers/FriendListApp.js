@@ -4,6 +4,9 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
 import * as FriendsActions from '../actions/FriendsActions';
+import * as FilterActions from '../actions/FilterActions';
+import * as types from '../constants/ActionTypes';
+
 import { FriendList, AddFriendInput } from '../components';
 
 const RaisedButton = require('material-ui/lib/raised-button');
@@ -13,13 +16,22 @@ const ToolbarGroup = require('material-ui/lib/toolbar/toolbar-group');
 const ToolbarSeparator = require('material-ui/lib/toolbar/toolbar-separator');
 
 let filterOptions = [
-    { payload: '1', text: 'All' },
-    { payload: '2', text: 'Started' },
+    { payload: types.VisibilityFilters.SHOW_ALL, text: 'All' },
+    { payload: types.VisibilityFilters.STAR_FRIEND, text: 'Started' }
 ];
 
 
+function selectFriends(state) {
+    switch (state.visibilityFilter) {
+    case types.VisibilityFilters.SHOW_ALL:
+        return state;
+    case types.VisibilityFilters.SHOW_STARTED:
+        return state.friendsById.filter(friend => friend.starred);
+    }
+}
+
 @connect(state => ({
-    friendlist: state.friendlist
+    friendlist: selectFriends(state.friendlist)
 }))
 export default class FriendListApp extends Component {
 
@@ -28,14 +40,17 @@ export default class FriendListApp extends Component {
     }
 
     render () {
+        // Injected by connect() call:
         const { friendlist: { friendsById }, dispatch } = this.props;
-        const actions = bindActionCreators(FriendsActions, dispatch);
+        const friendsActions = bindActionCreators(FriendsActions, dispatch);
+        const filterActions = bindActionCreators(FilterActions, dispatch);
 
         return (
                 <div>
                    <Toolbar className={styles.toolBar}>
                       <ToolbarGroup key={0} float="left">
-                         <DropDownMenu menuItems={filterOptions} />
+                         <DropDownMenu menuItems={filterOptions}
+                                       onChange={filterActions.setVisibilityFilter} />
                       </ToolbarGroup>
 
                       <ToolbarSeparator/>
@@ -47,8 +62,8 @@ export default class FriendListApp extends Component {
 
                    <div className={styles.friendListApp}>
                       <h1>The FriendList</h1>
-                      <AddFriendInput addFriend={actions.addFriend} />
-                      <FriendList friends={friendsById} actions={actions} />
+                      <AddFriendInput addFriend={friendsActions.addFriend} />
+                      <FriendList friends={friendsById} actions={friendsActions} />
                    </div>
                 </div>
         );
