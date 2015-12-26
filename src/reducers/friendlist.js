@@ -4,7 +4,6 @@ import assign from 'lodash/object/assign';
 import mapValues from 'lodash/object/mapValues';
 
 const initialState = {
-    visibilityFilter: types.VisibilityFilters.SHOW_ALL,
     friends: [1, 2, 3],
     friendsById: {
         1: {
@@ -59,15 +58,4 @@ export default function friends(state = initialState, action) {
     default:
       return state;
   }
-}
-
-
-export default function visibilityFilter(state = initialState,
-                                         action) {
-    switch (action.type) {
-    case types.SET_VISIBILITY_FILTER:
-        return action.filter;
-    default:
-        return state;
-    }
 }

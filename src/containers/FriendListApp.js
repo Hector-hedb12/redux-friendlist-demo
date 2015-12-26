@@ -4,7 +4,7 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
 import * as FriendsActions from '../actions/FriendsActions';
-import * as FilterActions from '../actions/FilterActions';
+import {setVisibilityFilter} from '../actions/FilterActions';
 import * as types from '../constants/ActionTypes';
 
 import { FriendList, AddFriendInput } from '../components';
@@ -17,21 +17,33 @@ const ToolbarSeparator = require('material-ui/lib/toolbar/toolbar-separator');
 
 let filterOptions = [
     { payload: types.VisibilityFilters.SHOW_ALL, text: 'All' },
-    { payload: types.VisibilityFilters.STAR_FRIEND, text: 'Started' }
+    { payload: types.VisibilityFilters.SHOW_STARTED, text: 'Started' }
 ];
 
 
-function selectFriends(state) {
-    switch (state.visibilityFilter) {
+function selectFriends(friends, filter) {
+    switch (filter.payload) {
     case types.VisibilityFilters.SHOW_ALL:
-        return state;
+        return friends.friendsById;
+
     case types.VisibilityFilters.SHOW_STARTED:
-        return state.friendsById.filter(friend => friend.starred);
+        var filteredFriends = {};
+
+        for (var key of friends.friends) {
+            if (friends.friendsById[key].starred){
+                filteredFriends[key] = friends.friendsById[key];
+            }
+        };
+
+        return filteredFriends;
+
+    default:
+        return friends.friendsById;
     }
 }
 
 @connect(state => ({
-    friendlist: selectFriends(state.friendlist)
+    friendlist: selectFriends(state.friendlist, state.filter)
 }))
 export default class FriendListApp extends Component {
 
@@ -41,16 +53,15 @@ export default class FriendListApp extends Component {
 
     render () {
         // Injected by connect() call:
-        const { friendlist: { friendsById }, dispatch } = this.props;
+        const { friendlist, dispatch } = this.props;
         const friendsActions = bindActionCreators(FriendsActions, dispatch);
-        const filterActions = bindActionCreators(FilterActions, dispatch);
 
         return (
                 <div>
                    <Toolbar className={styles.toolBar}>
                       <ToolbarGroup key={0} float="left">
                          <DropDownMenu menuItems={filterOptions}
-                                       onChange={filterActions.setVisibilityFilter} />
+                                       onChange={(e, index, value) => dispatch(setVisibilityFilter(value))} />
                       </ToolbarGroup>
 
                       <ToolbarSeparator/>
@@ -63,7 +74,7 @@ export default class FriendListApp extends Component {
                    <div className={styles.friendListApp}>
                       <h1>The FriendList</h1>
                       <AddFriendInput addFriend={friendsActions.addFriend} />
-                      <FriendList friends={friendsById} actions={friendsActions} />
+                      <FriendList friends={friendlist} actions={friendsActions} />
                    </div>
                 </div>
         );
