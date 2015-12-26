@@ -17,7 +17,7 @@ const ToolbarSeparator = require('material-ui/lib/toolbar/toolbar-separator');
 
 let filterOptions = [
     { payload: types.VisibilityFilters.SHOW_ALL, text: 'All' },
-    { payload: types.VisibilityFilters.SHOW_STARTED, text: 'Started' }
+    { payload: types.VisibilityFilters.SHOW_STARRED, text: 'Started' }
 ];
 
 
@@ -26,7 +26,7 @@ function selectFriends(friends, filter) {
     case types.VisibilityFilters.SHOW_ALL:
         return friends.friendsById;
 
-    case types.VisibilityFilters.SHOW_STARTED:
+    case types.VisibilityFilters.SHOW_STARRED:
         var filteredFriends = {};
 
         for (var key of friends.friends) {

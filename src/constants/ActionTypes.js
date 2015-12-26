@@ -9,5 +9,5 @@ export const SET_VISIBILITY_FILTER = 'SET_VISIBILITY_FILTER';
 
 export const VisibilityFilters = {
     SHOW_ALL: 'SHOW_ALL',
-    SHOW_STARTED: 'SHOW_STARTED'
+    SHOW_STARRED: 'SHOW_STARRED'
 };
