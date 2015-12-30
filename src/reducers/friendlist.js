@@ -3,57 +3,35 @@ import omit from 'lodash/object/omit';
 import assign from 'lodash/object/assign';
 import mapValues from 'lodash/object/mapValues';
 
-const initialState = {
-    friends: [1, 2, 3],
-    friendsById: {
-        1: {
-            id: 1,
-            name: 'Theodore Roosevelt'
-        },
-        2: {
-            id: 2,
-            name: 'Abraham Lincoln'
-        },
-        3: {
-            id: 3,
-            name: 'George Washington'
-        }
+const initialState = [
+    {
+        id: 1,
+        name: 'Theodore Roosevelt'
+    },
+    {
+        id: 2,
+        name: 'Abraham Lincoln'
+    },
+    {
+        id: 3,
+        name: 'George Washington'
     }
-};
+];
 
 export default function friends(state = initialState, action) {
   switch (action.type) {
 
     case types.ADD_FRIEND:
-      const newId = state.friends[state.friends.length-1] + 1;
-      return {
-        ...state,
-        friends: state.friends.concat(newId),
-        friendsById: {
-          ...state.friendsById,
-          [newId]: {
-            id: newId,
-            name: action.name
-          }
-        },
-      }
+      const newId = state.reduce((maxId, friend) => Math.max(friend.id, maxId), -1) + 1;
+      return [...state, {id: newId, name: action.name}];
 
     case types.DELETE_FRIEND:
-      return {
-        ...state,
-        friends: state.friends.filter(id => id !== action.id),
-        friendsById: omit(state.friendsById, action.id)
-      }
+      return state.filter(friend => friend.id !== action.id);
 
     case types.STAR_FRIEND:
-      return {
-        ...state,
-        friendsById: mapValues(state.friendsById, (friend) => {
-          return friend.id === action.id ?
-            assign({}, friend, { starred: !friend.starred }) :
-            friend
-        })
-      }
+      return state.map(
+          friend => friend.id !== action.id ? friend : Object.assign({}, friend, { starred: !friend.starred })
+      );
 
     default:
       return state;

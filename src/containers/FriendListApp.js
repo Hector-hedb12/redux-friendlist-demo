@@ -24,21 +24,13 @@ let filterOptions = [
 function selectFriends(friends, filter) {
     switch (filter.payload) {
     case types.VisibilityFilters.SHOW_ALL:
-        return friends.friendsById;
+        return friends;
 
     case types.VisibilityFilters.SHOW_STARRED:
-        var filteredFriends = {};
-
-        for (var key of friends.friends) {
-            if (friends.friendsById[key].starred){
-                filteredFriends[key] = friends.friendsById[key];
-            }
-        };
-
-        return filteredFriends;
+        return friends.filter(friend => friend.starred);
 
     default:
-        return friends.friendsById;
+        return friends;
     }
 }
 
@@ -49,7 +41,7 @@ export default class FriendListApp extends Component {
 
     static propTypes = {
         dispatch: PropTypes.func.isRequired
-    }
+    };
 
     render () {
         // Injected by connect() call:
