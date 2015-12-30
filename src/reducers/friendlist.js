@@ -3,22 +3,26 @@ import omit from 'lodash/object/omit';
 import assign from 'lodash/object/assign';
 import mapValues from 'lodash/object/mapValues';
 
-const initialState = [
-    {
-        id: 1,
-        name: 'Theodore Roosevelt'
-    },
-    {
-        id: 2,
-        name: 'Abraham Lincoln'
-    },
-    {
-        id: 3,
-        name: 'George Washington'
-    }
-];
+const initialState = {
+    past: [],
+    present: [
+        {
+            id: 1,
+            name: 'Theodore Roosevelt'
+        },
+        {
+            id: 2,
+            name: 'Abraham Lincoln'
+        },
+        {
+            id: 3,
+            name: 'George Washington'
+        }
+    ],
+    future: []
+};
 
-export default function friends(state = initialState, action) {
+export default function friends(state = initialState.present, action) {
   switch (action.type) {
 
     case types.ADD_FRIEND:

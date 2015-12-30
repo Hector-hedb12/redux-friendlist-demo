@@ -10,6 +10,7 @@ body {
   padding-top: 18px;
   background-color: #5C75B0;
   border: 1px solid #E3E3E3;
+  margin: 0 auto;
 }
 
 :local(.friendListApp h1) {

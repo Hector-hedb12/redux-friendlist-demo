@@ -2,6 +2,7 @@ import React, { Component, PropTypes } from 'react';
 import styles from './FriendListApp.css';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
+import { ActionCreators } from 'redux-undo';
 
 import * as FriendsActions from '../actions/FriendsActions';
 import {setVisibilityFilter} from '../actions/FilterActions';
@@ -35,7 +36,9 @@ function selectFriends(friends, filter) {
 }
 
 @connect(state => ({
-    friendlist: selectFriends(state.friendlist, state.filter)
+    friendlist: selectFriends(state.friendlist.present, state.filter),
+    undoDisabled: state.friendlist.past.length === 0,
+    redoDisabled: state.friendlist.future.length === 0
 }))
 export default class FriendListApp extends Component {
 
@@ -59,7 +62,12 @@ export default class FriendListApp extends Component {
                       <ToolbarSeparator/>
 
                       <ToolbarGroup key={1} float="right">
-                         <RaisedButton label="Delete all" primary={true} />
+                         <RaisedButton label="Undo" primary={true}
+                                       onClick={() => dispatch(ActionCreators.undo())}
+                                       disabled={this.props.undoDisabled} />
+                         <RaisedButton label="Redo" primary={true}
+                                       onClick={() => dispatch(ActionCreators.redo())}
+                                       disabled={this.props.redoDisabled} />
                       </ToolbarGroup>
                    </Toolbar>
 
